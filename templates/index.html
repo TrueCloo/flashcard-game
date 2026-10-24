@@ -6,11 +6,7 @@
     <title>Flashcards</title>
   </head>
   <body>
-    {% for card in cards %}
-      <details>
-        <summary>{{ card.question }}</summary>
-        <p>{{ card.answer }}</p>
-      </details>
-    {% endfor %}
+    <h3>Lives: {{ lives }}</h3>
+    <p>{{ card.question }}</p>
   </body>
 </html>

@@ -16,4 +16,4 @@ def hello():
         session["card_index"] = 0
         session["lives"] = 3
 
-    return render_template('index.html', cards=CARDS)
+    return render_template('index.html', card=CARDS[session["card_index"]], lives=session["lives"])
