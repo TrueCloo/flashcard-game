@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, session
 
 app = Flask(__name__)
+
+app.secret_key = "Welcome Learner"
 
 CARDS = [
     {"question": "What loop structure is used to iterate over an unknown number of items?", "answer": "while loop"},
@@ -10,4 +12,8 @@ CARDS = [
 
 @app.route('/')
 def hello():
+    if "lives" not in session:
+        session["card_index"] = 0
+        session["lives"] = 3
+
     return render_template('index.html', cards=CARDS)
