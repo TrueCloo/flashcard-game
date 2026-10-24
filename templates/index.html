@@ -6,11 +6,12 @@
     <title>Flashcards</title>
   </head>
   <body>
-    {% for card in cards %}
-      <details>
-        <summary>{{ card.question }}</summary>
-        <p>{{ card.answer }}</p>
-      </details>
-    {% endfor %}
+    <h3>Lives: {{ lives }}</h3>
+    <p>{{ card.question }}</p>
+    <form method="POST">
+      <label for="answer">Your answer:</label>
+      <input id="answer" type="text" name="answer">
+      <button type="submit">Answer</button>
+    </form>
   </body>
 </html>
