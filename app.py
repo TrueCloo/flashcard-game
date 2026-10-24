@@ -10,7 +10,7 @@ CARDS = [
     {"question": "Which data structure is used to store key-value pairs?", "answer": "Dictionary"}
 ]
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def hello():
     if "lives" not in session:
         session["card_index"] = 0
