@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request
 
 app = Flask(__name__)
 
@@ -15,5 +15,12 @@ def hello():
     if "lives" not in session:
         session["card_index"] = 0
         session["lives"] = 3
+
+    if request.method == "POST":
+        userAnswer = request.form.get("answer").strip().lower()
+        if userAnswer == CARDS[session["card_index"]]["answer"].lower().strip():
+            session["card_index"] += 1
+        else:
+            session["lives"] -= 1
 
     return render_template('index.html', card=CARDS[session["card_index"]], lives=session["lives"])
