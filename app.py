@@ -12,6 +12,9 @@ CARDS = [
 
 @app.route('/', methods=["GET", "POST"])
 def hello():
+
+    maxCards = len(CARDS)
+
     if "lives" not in session:
         session["card_index"] = 0
         session["lives"] = 3
@@ -22,5 +25,8 @@ def hello():
             session["card_index"] += 1
         else:
             session["lives"] -= 1
+
+    if session["card_index"] >= maxCards:
+        return render_template('win.html')
 
     return render_template('index.html', card=CARDS[session["card_index"]], lives=session["lives"])
