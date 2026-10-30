@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request, redirect
 
 app = Flask(__name__)
 
@@ -12,8 +12,29 @@ CARDS = [
 
 @app.route('/', methods=["GET", "POST"])
 def hello():
+
+    maxCards = len(CARDS)
+
     if "lives" not in session:
         session["card_index"] = 0
         session["lives"] = 3
 
+    if request.method == "POST":
+        userAnswer = request.form.get("answer").strip().lower()
+        if userAnswer == CARDS[session["card_index"]]["answer"].lower().strip():
+            session["card_index"] += 1
+        else:
+            session["lives"] -= 1
+
+    if session["card_index"] >= maxCards:
+        return render_template('win.html')
+    if session["lives"] <= 0:
+        return render_template('lose.html')
+
     return render_template('index.html', card=CARDS[session["card_index"]], lives=session["lives"])
+
+@app.route('/restart', methods=["GET", "POST"])
+def restart():
+    ## clears the sessioon to start a new game
+    session.clear()
+    return redirect('/')
