@@ -7,6 +7,9 @@
   </head>
   <body>
     <h3>Lives: {{ lives }}</h3>
+    <form action="/restart" method="POST">
+      <button type="submit">Restart</button>
+    </form>
     <p>{{ card.question }}</p>
     <form method="POST">
       <label for="answer">Your answer:</label>
