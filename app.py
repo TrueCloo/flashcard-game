@@ -1,19 +1,17 @@
 from flask import Flask, render_template, session, request, redirect
+from cs50 import SQL
 
 app = Flask(__name__)
 
-app.secret_key = "Welcome Learner"
+db = SQL("sqlite:///flashcards.db")
 
-CARDS = [
-    {"question": "What loop structure is used to iterate over an unknown number of items?", "answer": "while loop"},
-    {"question": "How many times will the following loop execute? for i in range(5): print(i)", "answer": "5"},
-    {"question": "Which data structure is used to store key-value pairs?", "answer": "Dictionary"}
-]
+app.secret_key = "Welcome Learner"
 
 @app.route('/', methods=["GET", "POST"])
 def hello():
 
-    maxCards = len(CARDS)
+    cards = db.execute('SELECT question, answer FROM cards')
+    maxCards = len(cards)
 
     if "lives" not in session:
         session["card_index"] = 0
@@ -21,7 +19,7 @@ def hello():
 
     if request.method == "POST":
         userAnswer = request.form.get("answer").strip().lower()
-        if userAnswer == CARDS[session["card_index"]]["answer"].lower().strip():
+        if userAnswer == cards[session["card_index"]]["answer"].lower().strip():
             session["card_index"] += 1
         else:
             session["lives"] -= 1
@@ -31,10 +29,25 @@ def hello():
     if session["lives"] <= 0:
         return render_template('lose.html')
 
-    return render_template('index.html', card=CARDS[session["card_index"]], lives=session["lives"])
+    return render_template('index.html', card=cards[session["card_index"]], lives=session["lives"])
 
 @app.route('/restart', methods=["GET", "POST"])
 def restart():
     ## clears the sessioon to start a new game
     session.clear()
     return redirect('/')
+
+@app.route('/add', methods=["GET", "POST"])
+def add():
+    if request.method == "POST":
+        newQuestion = request.form.get("question").strip()
+        newAnswer = request.form.get("answer").strip()
+
+        if not newQuestion or not newAnswer:
+            return redirect("/add")
+
+        db.execute("INSERT INTO cards (question, answer) VALUES (?, ?)", newQuestion, newAnswer)
+
+        return redirect('/add')
+    
+    return render_template("add.html")
