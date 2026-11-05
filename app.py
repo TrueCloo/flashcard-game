@@ -36,3 +36,18 @@ def restart():
     ## clears the sessioon to start a new game
     session.clear()
     return redirect('/')
+
+@app.route('/add', methods=["GET", "POST"])
+def add():
+    if request.method == "POST":
+        newQuestion = request.form.get("question").strip()
+        newAnswer = request.form.get("answer").strip()
+
+        if not newQuestion or not newAnswer:
+            return redirect("/add")
+
+        db.execute("INSERT INTO cards (question, answer) VALUES (?, ?)", newQuestion, newAnswer)
+
+        return redirect('/add')
+    
+    return render_template("add.html")
